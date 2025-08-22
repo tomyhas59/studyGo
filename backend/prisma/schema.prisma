@@ -1,0 +1,30 @@
+// Prisma client 설정
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma" // 백엔드 src에서 import 가능
+}
+
+// MySQL 데이터소스
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  posts     Post[] // ← 역방향 관계
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+}
