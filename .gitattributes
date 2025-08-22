@@ -1,0 +1,12 @@
+# 모든 텍스트 파일 LF로 통일
+* text=auto
+
+# 확장자별 LF 설정
+*.js text
+*.ts text
+*.tsx text
+*.json text
+*.css text
+*.scss text
+*.md text
+*.html text

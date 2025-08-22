@@ -12,6 +12,9 @@
 /backend/generated
 /backend/prisma/migrations
 
+# Nest.js
+backend/dist/
+
 # Env files
 .env*
 .env.local
@@ -34,3 +37,15 @@ yarn-error.log*
 *.pem
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# MacOS
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
