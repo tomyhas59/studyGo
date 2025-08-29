@@ -21,10 +21,12 @@ model User {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
-  createdAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String
+  image       String?   // 선택적 이미지
+  authorId    Int
+  author      User      @relation(fields: [authorId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
