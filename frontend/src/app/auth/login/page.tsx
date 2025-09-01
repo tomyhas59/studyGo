@@ -3,18 +3,26 @@
 import { useState } from "react";
 import axios from "axios";
 
+import { useUserStore } from "store/userStore";
+import { useRouter } from "next/navigation";
+
 export default function LoginPage() {
+  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post<{ access_token: string }>(
-        "/api/auth/login",
-        { email, password }
-      );
+      const res = await axios.post("/api/auth/login", { email, password });
+      const user = res.data;
+
+      setUser(user);
+
       localStorage.setItem("token", res.data.access_token);
       alert("로그인 성공!");
+      router.push("/");
     } catch (err) {
       alert("로그인 실패");
       console.error(err);

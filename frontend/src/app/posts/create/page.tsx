@@ -3,21 +3,25 @@
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "store/userStore";
 
 export default function CreatePostPage() {
   const router = useRouter();
   const [form, setForm] = useState({ title: "", content: "", image: "" });
+  const user = useUserStore((state) => state.user);
 
   const handleSubmit = async () => {
     try {
-      await axios.post("/api/posts", { ...form, authorId: 1 }); // 테스트용 authorId
+      await axios.post("/api/posts", { ...form, user });
       alert("작성 완료!");
-      router.push("/posts");
+      router.push("/posts/list");
     } catch (err) {
       alert("작성 실패");
       console.error(err);
     }
   };
+
+  if (!user) return <div>회원만 쓸 수 있습니다.</div>;
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow">

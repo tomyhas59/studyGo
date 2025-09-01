@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 import axios from "axios";
-
-interface RegisterForm {
-  email: string;
-  password: string;
-  name: string;
-}
+import { RegisterForm } from "@shared/type";
 
 export default function RegisterPage() {
   const [form, setForm] = useState<RegisterForm>({

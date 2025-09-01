@@ -11,3 +11,9 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface RegisterForm {
+  email: string;
+  password: string;
+  name: string;
+}
