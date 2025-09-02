@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "store/userStore";
+import { useLoadingStore } from "store/LoadingState";
 
 export default function CreatePostPage() {
   const router = useRouter();

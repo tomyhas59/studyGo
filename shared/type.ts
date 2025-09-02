@@ -3,13 +3,12 @@ export interface Post {
   title: string;
   content: string;
   image?: string;
-  authorId: number;
   author: {
     id: number;
     name: string;
   };
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export interface RegisterForm {

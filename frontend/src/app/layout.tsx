@@ -1,5 +1,6 @@
-import Link from "next/link";
 import "./globals.css";
+import Header from "./components/Header";
+import Spinner from "./components/Spinner";
 
 export const metadata = {
   title: "Study Project",
@@ -14,23 +15,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-screen bg-gray-50 text-gray-900">
-        {/* Header */}
-        <header className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold">
-            Study Project
-          </Link>
-          <nav className="flex gap-4">
-            <Link href="/auth/login">로그인</Link>
-            <Link href="/auth/register">회원가입</Link>
-            <Link href="/posts/list">게시글 목록</Link>
-            <Link href="/posts/create">글쓰기</Link>
-          </nav>
-        </header>
-
-        {/* Main Content */}
+        <Header />
+        <Spinner />
         <main className="max-w-3xl mx-auto px-6 py-10">{children}</main>
 
-        {/* Footer */}
         <footer className="text-center py-6 text-sm text-gray-500">
           © {new Date().getFullYear()} Study Project
         </footer>

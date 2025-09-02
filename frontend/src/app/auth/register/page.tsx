@@ -3,8 +3,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { RegisterForm } from "@shared/type";
+import { useRouter } from "next/navigation";
+import { useLoadingStore } from "store/LoadingState";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [form, setForm] = useState<RegisterForm>({
     email: "",
     password: "",
@@ -15,6 +19,7 @@ export default function RegisterPage() {
     try {
       await axios.post("/api/auth/register", form);
       alert("회원가입 성공!");
+      router.push("/auth/login");
     } catch (err) {
       alert("회원가입 실패");
       console.error(err);
