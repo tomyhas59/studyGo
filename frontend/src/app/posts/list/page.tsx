@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-import { Post } from "@shared/type";
+import { PostType } from "@shared/type";
 import { useUserStore } from "store/userStore";
 import { useLoadingStore } from "store/LoadingState";
 import axios from "@/app/lib/axios";
 
 export default function PostListPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostType[]>([]);
   const isLoading = useLoadingStore((state) => state.isLoading);
 
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export default function PostListPage() {
   const fetchPosts = async () => {
     try {
       setError(null);
-      const res = await axios.get<Post[]>("/posts");
+      const res = await axios.get<PostType[]>("/posts");
       setPosts(res.data);
     } catch (err: any) {
       console.error(err);

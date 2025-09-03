@@ -1,4 +1,4 @@
-export interface Post {
+export type PostType = {
   id: number;
   title: string;
   content: string;
@@ -9,10 +9,10 @@ export interface Post {
   };
   createdAt: string;
   updatedAt?: string;
-}
+};
 
-export interface RegisterForm {
+export type RegisterForm = {
   email: string;
   password: string;
   name: string;
-}
+};

@@ -5,7 +5,6 @@ import axios from "axios";
 
 import { useUserStore } from "store/userStore";
 import { useRouter } from "next/navigation";
-import { useLoadingStore } from "store/LoadingState";
 
 export default function LoginPage() {
   const router = useRouter();

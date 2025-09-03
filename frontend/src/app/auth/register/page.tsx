@@ -4,7 +4,6 @@ import { useState } from "react";
 import axios from "axios";
 import { RegisterForm } from "@shared/type";
 import { useRouter } from "next/navigation";
-import { useLoadingStore } from "store/LoadingState";
 
 export default function RegisterPage() {
   const router = useRouter();

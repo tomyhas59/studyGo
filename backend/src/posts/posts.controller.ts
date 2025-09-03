@@ -6,52 +6,46 @@ import {
   Delete,
   Param,
   Body,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private postsService: PostsService) {}
-
-  @HttpPost()
-  create(
-    @Body()
-    dto: {
-      authorId: number;
-      title: string;
-      content: string;
-      image?: string;
-    },
-  ) {
-    return this.postsService.create(
-      dto.authorId,
-      dto.title,
-      dto.content,
-      dto.image,
-    );
-  }
+  constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.postsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return this.postsService.findOne(+id);
+  }
+
+  @HttpPost()
+  async create(
+    @Body()
+    data: {
+      title: string;
+      content: string;
+      image?: string;
+      authorId: number;
+    },
+  ) {
+    return this.postsService.create(data);
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: { title: string; content: string; image?: string },
+  async update(
+    @Param('id') id: string,
+    @Body() data: { title?: string; content?: string; image?: string },
   ) {
-    return this.postsService.update(id, dto.title, dto.content, dto.image);
+    return this.postsService.update(+id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.remove(id);
+  async remove(@Param('id') id: string) {
+    return this.postsService.remove(+id);
   }
 }
