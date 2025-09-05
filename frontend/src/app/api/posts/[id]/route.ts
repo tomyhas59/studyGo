@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { mockPosts } from "../route"; // posts route에서 mockPosts import
+import { mockPosts } from "../route";
 
 interface Params {
   id: string;

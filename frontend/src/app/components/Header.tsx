@@ -1,42 +1,74 @@
 "use client";
 
 import Link from "next/link";
-import { useUserStore } from "store/userStore";
+import { useState } from "react";
 
 export default function Header() {
-  const user = useUserStore((state) => state.user);
-  const logout = useUserStore((state) => state.logout);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <header className="bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-40">
       <Link href="/" className="text-xl font-bold">
-        Study Project
+        studyGO
       </Link>
 
-      <nav className="flex gap-4">
-        {user ? (
-          <>
-            <Link href="/mypage">마이 페이지</Link>
-            <Link href="/posts/list">게시글 목록</Link>
-            <Link href="/posts/create">글쓰기</Link>
-            <button
-              onClick={() => {
-                logout();
-                localStorage.removeItem("token");
-              }}
-              className="text-red-500 hover:underline"
-            >
-              로그아웃
-            </button>
-          </>
-        ) : (
-          <>
-            <Link href="/auth/login">로그인</Link>
-            <Link href="/auth/register">회원가입</Link>
-            <Link href="/posts/list">게시글 목록</Link>
-          </>
-        )}
+      {/* PC 메뉴 */}
+      <nav className="hidden md:flex gap-4">
+        <Link href="/auth/login" className="hover:text-blue-500">
+          로그인
+        </Link>
+        <Link href="/auth/register" className="hover:text-blue-500">
+          회원가입
+        </Link>
+        <Link href="/posts/list" className="hover:text-blue-500">
+          게시글 목록
+        </Link>
+        <Link href="/posts/create" className="hover:text-blue-500">
+          글쓰기
+        </Link>
       </nav>
+
+      {/* 모바일 햄버거 */}
+      <button
+        className="md:hidden text-gray-700"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        ☰
+      </button>
+
+      {/* 모바일 메뉴 */}
+      {isOpen && (
+        <nav className="absolute top-full left-0 w-full bg-white flex flex-col p-4 gap-2 shadow-md md:hidden">
+          <Link
+            href="/auth/login"
+            className="hover:text-blue-500"
+            onClick={() => setIsOpen(false)}
+          >
+            로그인
+          </Link>
+          <Link
+            href="/auth/register"
+            className="hover:text-blue-500"
+            onClick={() => setIsOpen(false)}
+          >
+            회원가입
+          </Link>
+          <Link
+            href="/posts/list"
+            className="hover:text-blue-500"
+            onClick={() => setIsOpen(false)}
+          >
+            게시글 목록
+          </Link>
+          <Link
+            href="/posts/create"
+            className="hover:text-blue-500"
+            onClick={() => setIsOpen(false)}
+          >
+            글쓰기
+          </Link>
+        </nav>
+      )}
     </header>
   );
 }
