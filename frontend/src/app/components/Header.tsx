@@ -1,74 +1,65 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useUserStore } from "store/userStore";
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
-
+  const user = useUserStore((state) => state.user);
+  const logout = useUserStore((state) => state.logout);
   return (
-    <header className="bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-40">
-      <Link href="/" className="text-xl font-bold">
+    <header className="bg-white shadow-md px-6 py-4 flex flex-wrap justify-between items-center sticky top-0 z-50">
+      <Link
+        href="/"
+        className="text-2xl font-extrabold text-gray-800 hover:text-blue-500 transition"
+      >
         studyGO
       </Link>
 
-      {/* PC 메뉴 */}
-      <nav className="hidden md:flex gap-4">
-        <Link href="/auth/login" className="hover:text-blue-500">
-          로그인
-        </Link>
-        <Link href="/auth/register" className="hover:text-blue-500">
-          회원가입
-        </Link>
-        <Link href="/posts/list" className="hover:text-blue-500">
+      <nav className="flex flex-wrap gap-4 mt-2 md:mt-0">
+        {user ? (
+          <>
+            <Link
+              href="/auth/myPage"
+              className="text-gray-700 hover:text-blue-500 transition"
+            >
+              내 정보
+            </Link>
+            <button
+              onClick={logout}
+              className="text-gray-700 hover:text-blue-500 transition cursor-pointer"
+            >
+              로그아웃
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/auth/login"
+              className="text-gray-700 hover:text-blue-500 transition"
+            >
+              로그인
+            </Link>
+            <Link
+              href="/auth/register"
+              className="text-gray-700 hover:text-blue-500 transition"
+            >
+              회원가입
+            </Link>
+          </>
+        )}
+        <Link
+          href="/posts/list"
+          className="text-gray-700 hover:text-blue-500 transition"
+        >
           게시글 목록
         </Link>
-        <Link href="/posts/create" className="hover:text-blue-500">
+        <Link
+          href="/posts/create"
+          className="text-gray-700 hover:text-blue-500 transition"
+        >
           글쓰기
         </Link>
       </nav>
-
-      {/* 모바일 햄버거 */}
-      <button
-        className="md:hidden text-gray-700"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        ☰
-      </button>
-
-      {/* 모바일 메뉴 */}
-      {isOpen && (
-        <nav className="absolute top-full left-0 w-full bg-white flex flex-col p-4 gap-2 shadow-md md:hidden">
-          <Link
-            href="/auth/login"
-            className="hover:text-blue-500"
-            onClick={() => setIsOpen(false)}
-          >
-            로그인
-          </Link>
-          <Link
-            href="/auth/register"
-            className="hover:text-blue-500"
-            onClick={() => setIsOpen(false)}
-          >
-            회원가입
-          </Link>
-          <Link
-            href="/posts/list"
-            className="hover:text-blue-500"
-            onClick={() => setIsOpen(false)}
-          >
-            게시글 목록
-          </Link>
-          <Link
-            href="/posts/create"
-            className="hover:text-blue-500"
-            onClick={() => setIsOpen(false)}
-          >
-            글쓰기
-          </Link>
-        </nav>
-      )}
     </header>
   );
 }

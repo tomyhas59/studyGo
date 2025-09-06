@@ -1,7 +1,7 @@
-import { Post } from "@shared/type";
+import { PostType } from "@shared/type";
 import { NextResponse } from "next/server";
 
-export let mockPosts: Post[] = [
+export let mockPosts: PostType[] = [
   {
     id: 1,
     title: "첫 번째 글",
@@ -18,7 +18,17 @@ export let mockPosts: Post[] = [
   },
 ];
 
-export async function GET() {
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const authorId = url.searchParams.get("authorId");
+
+  if (authorId) {
+    const posts = mockPosts.filter(
+      (post) => post.author.id.toString() === authorId
+    );
+    return NextResponse.json(posts);
+  }
+
   return NextResponse.json(mockPosts);
 }
 

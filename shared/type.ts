@@ -10,9 +10,3 @@ export type PostType = {
   createdAt: string;
   updatedAt?: string;
 };
-
-export type RegisterForm = {
-  email: string;
-  password: string;
-  name: string;
-};

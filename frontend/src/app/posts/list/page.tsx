@@ -4,10 +4,12 @@ import { PostType } from "@shared/type";
 import { useUserStore } from "store/userStore";
 import axios from "@/app/lib/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function PostListPage() {
   const queryClient = useQueryClient();
   const user = useUserStore((state) => state.user);
+  const router = useRouter();
 
   const {
     data: posts,
@@ -41,28 +43,36 @@ export default function PostListPage() {
   if (isLoading) return <p>불러오는 중...</p>;
   if (isError) return <p>에러 발생!</p>;
 
-  console.log(posts);
   return (
-    <div className="max-w-3xl mx-auto mt-10">
-      <h1 className="text-3xl font-bold mb-6">모집글 리스트</h1>
+    <div className="max-w-3xl mx-auto mt-10 space-y-6">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">모집글 리스트</h1>
+
       {posts?.length === 0 ? (
-        <p className="text-gray-500">등록된 게시글이 없습니다.</p>
+        <p className="text-gray-500 text-center">등록된 게시글이 없습니다.</p>
       ) : (
         posts?.map((post) => (
           <div
             key={post.id}
-            className="border p-4 mb-4 rounded shadow relative"
+            className="border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition bg-white cursor-pointer relative"
+            onClick={() => router.push(`/posts/${post.id}`)}
           >
-            <h2 className="text-xl font-semibold">{post.title}</h2>
-            <p>{post.content}</p>
-            <p className="text-sm text-gray-500">
-              작성자: {post.author.name} |{" "}
-              {new Date(post.createdAt).toLocaleString()}
-            </p>
+            <div className="p-5">
+              <h2 className="text-xl font-semibold text-blue-600 hover:underline">
+                {post.title}
+              </h2>
+              <p className="text-sm text-gray-500 mt-2">
+                작성자: {post.author.name} |{" "}
+                {new Date(post.createdAt).toLocaleString()}
+              </p>
+            </div>
+
             {user?.id === post.author.id && (
               <button
-                className="absolute top-2 right-2 text-red-500 hover:underline"
-                onClick={() => handleDelete(post.id)}
+                className="absolute top-3 right-3 text-red-500 hover:text-red-700 hover:underline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(post.id);
+                }}
               >
                 삭제
               </button>
