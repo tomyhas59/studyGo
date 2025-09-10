@@ -8,9 +8,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function CreatePostPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ title: "", content: "", image: "" });
+  const [form, setForm] = useState({
+    title: "",
+    content: "",
+    image: "",
+    category: "",
+  });
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
+
+  const categories = ["frontend", "backend", "AI"];
 
   const createPostMutation = useMutation({
     mutationFn: async (newPost: typeof form & { user: typeof user }) => {
@@ -46,6 +53,17 @@ export default function CreatePostPage() {
         value={form.title}
         onChange={(e) => setForm({ ...form, title: e.target.value })}
       />
+      <select
+        className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        value={form.category}
+        onChange={(e) => setForm({ ...form, category: e.target.value })}
+      >
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
       <textarea
         className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
         placeholder="내용"

@@ -9,7 +9,7 @@ type User = {
 
 export const mockUsers: User[] = [
   {
-    id: 1,
+    id: 3,
     email: "yh@naver.com",
     password: "123qwe",
     name: "yh",

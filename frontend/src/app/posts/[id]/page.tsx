@@ -4,14 +4,18 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@/app/lib/axios";
 import { PostType } from "@shared/type";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "store/userStore";
+import ParticipantList from "@/app/components/ParticipantList";
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
   const user = useUserStore((state) => state.user);
+  const [participants, setParticipants] = useState<
+    { id: number; name: string }[]
+  >([]);
 
   const {
     data: post,
@@ -22,6 +26,22 @@ export default function PostDetailPage() {
     queryFn: async () => {
       const res = await axios.get(`/posts/${id}`);
       return res.data;
+    },
+  });
+
+  const fetchParticipants = async () => {
+    const res = await axios.get(`/study/${id}/participants`);
+    setParticipants(res.data);
+  };
+
+  useEffect(() => {
+    fetchParticipants();
+  }, [id]);
+
+  const joinMutation = useMutation({
+    mutationFn: async () => await axios.post(`/study/${id}/join`, { user }),
+    onSuccess: () => {
+      fetchParticipants();
     },
   });
 
@@ -103,6 +123,7 @@ export default function PostDetailPage() {
       ) : (
         <>
           <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
+          <p className="mb-4 text-gray-600">카테고리: {post.category}</p>
           {post.image && (
             <img
               src={post.image}
@@ -113,6 +134,18 @@ export default function PostDetailPage() {
           <p className="mb-6 whitespace-pre-line text-gray-700">
             {post.content}
           </p>
+
+          <button
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            onClick={() => joinMutation.mutate()}
+          >
+            참가하기
+          </button>
+
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold mb-2">참가자 목록</h2>
+            <ParticipantList participants={participants} />
+          </div>
           <p className="text-sm text-gray-500 mb-6">
             작성자: {post.author.name} |{" "}
             {new Date(post.createdAt).toLocaleString()}

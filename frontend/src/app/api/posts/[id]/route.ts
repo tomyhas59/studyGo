@@ -5,14 +5,14 @@ interface Params {
   id: string;
 }
 
-export async function GET(req: Request, { params }: { params: Params }) {
-  const postId = parseInt(params.id);
+export async function GET(req: Request, context: { params: Promise<Params> }) {
+  const { id } = await context.params;
+  const postId = parseInt(id, 10);
+
   const post = mockPosts.find((post) => post.id === postId);
   if (!post) {
     return NextResponse.json(
-      {
-        message: "게시글을 찾을 수 없습니다",
-      },
+      { message: "해당 글을 찾을 수 없습니다." },
       { status: 404 }
     );
   }
