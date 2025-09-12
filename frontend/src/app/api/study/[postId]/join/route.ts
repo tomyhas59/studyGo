@@ -31,6 +31,5 @@ export async function POST(
     post.participants.push({ id: user.id, name: user.name });
   }
 
-  console.log(mockPosts);
   return NextResponse.json({ message: "참가 완료" });
 }
