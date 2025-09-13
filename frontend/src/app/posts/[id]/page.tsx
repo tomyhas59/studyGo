@@ -7,6 +7,8 @@ import { PostType } from "@shared/type";
 import { useEffect, useState } from "react";
 import { useUserStore } from "store/userStore";
 import ParticipantList from "@/app/components/ParticipantList";
+import PostForm from "@/app/components/PostForm";
+import DeleteButton from "@/app/components/DeleteButton";
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,6 +19,7 @@ export default function PostDetailPage() {
     { id: number; name: string }[]
   >([]);
 
+  // 게시글 가져오기
   const {
     data: post,
     isLoading,
@@ -38,17 +41,22 @@ export default function PostDetailPage() {
     fetchParticipants();
   }, [id]);
 
+  // 참여
   const joinMutation = useMutation({
     mutationFn: async () => await axios.post(`/study/${id}/join`, { user }),
-    onSuccess: () => {
-      fetchParticipants();
-    },
+    onSuccess: fetchParticipants,
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState({ title: "", content: "", image: "" });
+  // 참여 취소
+  const cancelMutation = useMutation({
+    mutationFn: async () =>
+      await axios.delete(`/study/${id}/leave`, { data: { user } }),
+    onSuccess: fetchParticipants,
+  });
 
-  const updateMutation = useMutation({
+  // 게시글 수정
+  const [isEditing, setIsEditing] = useState(false);
+  const updatePostMutation = useMutation({
     mutationFn: async (updatedPost: Partial<PostType>) => {
       await axios.put(`/posts/${id}`, updatedPost);
     },
@@ -58,62 +66,55 @@ export default function PostDetailPage() {
       setIsEditing(false);
       alert("게시글이 수정되었습니다.");
     },
-    onError: () => {
-      alert("수정 실패");
-    },
+    onError: () => alert("수정 실패"),
   });
 
   const handleEdit = () => {
-    if (!post) return;
-    setForm({
-      title: post.title,
-      content: post.content,
-      image: post.image || "",
-    });
+    if (user?.id !== post?.author.id) {
+      alert("작성자만 수정할 수 있습니다.");
+      return;
+    }
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    updateMutation.mutate(form);
+  const handleSubmit = (form: any) => {
+    if (!form.category) return alert("카테고리를 선택해주세요.");
+    if (!form.title.trim() || !form.content.trim())
+      return alert("빈 칸을 확인해주세요.");
+    if (!user) return alert("로그인 후 수정 가능합니다.");
+    updatePostMutation.mutate({ ...form, user });
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      await axios.delete(`/posts/${id}`);
+      router.push("/posts/list");
+    }
   };
 
   if (isLoading) return <p className="text-center mt-10">불러오는 중...</p>;
   if (isError || !post) return <p className="text-center mt-10">에러 발생!</p>;
 
   const isAuthor = user?.id === post.author.id;
+  const isJoined = participants.some((p) => p.id === user?.id);
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6 border rounded-lg shadow-lg bg-white">
+    <div className="max-w-3xl mx-auto mt-12 p-8 bg-white border border-gray-200 rounded-2xl shadow-lg grid gap-8">
       {isEditing ? (
-        <div className="space-y-4">
-          <input
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            placeholder="제목"
+        <div className="space-y-6">
+          <PostForm
+            onSubmit={handleSubmit}
+            initialValues={{
+              title: post.title,
+              content: post.content,
+              image: post.image || "",
+              category: post.category,
+            }}
+            submitText="수정"
           />
-          <textarea
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={form.content}
-            onChange={(e) => setForm({ ...form, content: e.target.value })}
-            placeholder="내용"
-            rows={6}
-          />
-          <input
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="이미지 URL"
-            value={form.image}
-            onChange={(e) => setForm({ ...form, image: e.target.value })}
-          />
-          <div className="flex flex-wrap gap-3">
+          <div className="flex justify-end gap-4">
             <button
-              className="px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
-              onClick={handleSave}
-            >
-              저장
-            </button>
-            <button
-              className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
               onClick={() => setIsEditing(false)}
             >
               취소
@@ -122,49 +123,80 @@ export default function PostDetailPage() {
         </div>
       ) : (
         <>
-          <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-          <p className="mb-4 text-gray-600">카테고리: {post.category}</p>
-          {post.image && (
-            <img
-              src={post.image}
-              alt="게시글 이미지"
-              className="mb-6 w-full rounded-lg object-cover"
-            />
-          )}
-          <p className="mb-6 whitespace-pre-line text-gray-700">
+          {/* 헤더 */}
+          <div className="grid gap-4">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+              <h1 className="text-4xl font-bold text-gray-800">{post.title}</h1>
+              <div className="flex flex-col md:flex-row md:items-center md:gap-4 text-gray-500 text-sm">
+                <span>
+                  작성자:{" "}
+                  <span className="font-medium">{post.author.name}</span>
+                </span>
+                <span>작성일: {new Date(post.createdAt).toLocaleString()}</span>
+                <span>
+                  카테고리: <span className="font-medium">{post.category}</span>
+                </span>
+              </div>
+            </div>
+            {post.image && (
+              <img
+                src={post.image}
+                alt="게시글 이미지"
+                className="w-full h-64 md:h-96 object-cover rounded-xl shadow-sm"
+              />
+            )}
+          </div>
+
+          {/* 내용 */}
+          <p className="bg-gray-100 p-2 rounded-lg min-h-[150px] border border-gray-200 text-gray-700 whitespace-pre-line leading-relaxed">
             {post.content}
           </p>
 
-          <button
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            onClick={() => joinMutation.mutate()}
-          >
-            참가하기
-          </button>
+          {/* 참여/참여취소 버튼 */}
+          {user && (
+            <div className="w-full md:w-1/2">
+              <button
+                className={`w-full px-6 py-3 rounded-lg font-medium text-white transition ${
+                  isJoined
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-green-500 hover:bg-green-600"
+                }`}
+                onClick={() =>
+                  isJoined ? cancelMutation.mutate() : joinMutation.mutate()
+                }
+              >
+                {isJoined ? "참여 취소" : "참여하기"}
+              </button>
+            </div>
+          )}
 
-          <div className="mt-4">
-            <h2 className="text-xl font-semibold mb-2">참가자 목록</h2>
-            <ParticipantList participants={participants} />
+          {/* 참가자 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-50 p-4 rounded-xl shadow-sm">
+              <h2 className="text-2xl font-semibold mb-3">참가자 목록</h2>
+              <ParticipantList participants={participants} />
+            </div>
           </div>
-          <p className="text-sm text-gray-500 mb-6">
-            작성자: {post.author.name} |{" "}
-            {new Date(post.createdAt).toLocaleString()}
-          </p>
-          <div className="flex flex-wrap gap-3">
+
+          {/* 액션 버튼 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             {isAuthor && (
               <button
-                className="px-5 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition"
+                className="px-6 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition"
                 onClick={handleEdit}
               >
                 수정
               </button>
             )}
             <button
-              className="px-5 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
               onClick={() => router.push("/posts/list")}
             >
               목록으로
             </button>
+            {isAuthor && (
+              <DeleteButton postId={post.id} onDelete={handleDelete} />
+            )}
           </div>
         </>
       )}

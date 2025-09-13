@@ -24,8 +24,10 @@ export default function PostListPage() {
   });
 
   const handleDelete = async (id: number) => {
-    await axios.delete(`/posts/${id}`);
-    refetch();
+    if (confirm("정말 삭제하시겠습니까?")) {
+      await axios.delete(`/posts/${id}`);
+      refetch();
+    }
   };
 
   return (

@@ -1,20 +1,23 @@
 import { mockPosts } from "@/app/api/posts/route";
 import { NextResponse } from "next/server";
 
-export async function POST(
+export async function DELETE(
   req: Request,
-  { params }: { params: { postId: string } }
+  context: { params: Promise<{ postId: string }> }
 ) {
-  const { userId } = await req.json();
-  const postId = parseInt(params.postId);
+  const { postId } = await context.params;
+  const body = await req.json();
+  const user = body.user;
 
-  const post = mockPosts.find((p) => p.id === postId);
+  const post = mockPosts.find((p) => p.id.toString() === postId);
   if (!post) {
-    return NextResponse.json({ message: "Post not found" }, { status: 404 });
+    return NextResponse.json(
+      { message: "게시글이 없습니다." },
+      { status: 404 }
+    );
   }
 
-  // 해당 post의 participants 배열에서 userId 제거
-  post.participants = post.participants.filter((p) => p.id !== userId);
+  post.participants = post.participants.filter((p) => p.id !== user.id);
 
   return NextResponse.json({
     message: "참여 취소 완료",

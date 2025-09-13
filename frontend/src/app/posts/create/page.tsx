@@ -5,23 +5,16 @@ import axios from "@/app/lib/axios";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "store/userStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import PostForm from "@/app/components/PostForm";
 
 export default function CreatePostPage() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    title: "",
-    content: "",
-    image: "",
-    category: "",
-  });
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
 
-  const categories = ["frontend", "backend", "AI"];
-
   const createPostMutation = useMutation({
-    mutationFn: async (newPost: typeof form & { user: typeof user }) => {
-      const res = await axios.post("/posts", newPost);
+    mutationFn: async (newPost) => {
+      return await axios.post("/posts", newPost);
     },
     onSuccess: () => {
       alert("작성 완료!");
@@ -34,7 +27,16 @@ export default function CreatePostPage() {
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = (form: any) => {
+    if (form.category === "") {
+      alert("카테고리를 선택해주세요.");
+      return;
+    }
+    if (form.title.trim() === "" || form.content.trim() === "") {
+      alert("빈 칸을 확인해주세요.");
+      return;
+    }
+
     if (!user) {
       alert("로그인 후 작성 가능합니다.");
       return;
@@ -44,45 +46,5 @@ export default function CreatePostPage() {
 
   if (!user) return <div>회원만 쓸 수 있습니다.</div>;
 
-  return (
-    <div className="max-w-md mx-auto mt-10 p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">모집글 작성</h1>
-      <input
-        className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="제목"
-        value={form.title}
-        onChange={(e) => setForm({ ...form, title: e.target.value })}
-      />
-      <select
-        className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        value={form.category}
-        onChange={(e) => setForm({ ...form, category: e.target.value })}
-      >
-        {categories.map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-      <textarea
-        className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="내용"
-        value={form.content}
-        onChange={(e) => setForm({ ...form, content: e.target.value })}
-        rows={6}
-      />
-      <input
-        className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="이미지 URL (옵션)"
-        value={form.image}
-        onChange={(e) => setForm({ ...form, image: e.target.value })}
-      />
-      <button
-        className="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-medium"
-        onClick={handleSubmit}
-      >
-        작성
-      </button>
-    </div>
-  );
+  return <PostForm onSubmit={handleSubmit} submitText="작성" />;
 }

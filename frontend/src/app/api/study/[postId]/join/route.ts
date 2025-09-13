@@ -3,18 +3,11 @@ import { mockPosts } from "../../../posts/route";
 
 export async function POST(
   req: Request,
-  { params }: { params: { postId: string } }
+  context: { params: Promise<{ postId: string }> }
 ) {
-  const postId = params.postId;
+  const { postId } = await context.params;
   const body = await req.json();
   const user = body.user;
-
-  if (!user) {
-    return NextResponse.json(
-      { message: "사용자 정보가 없습니다." },
-      { status: 400 }
-    );
-  }
 
   const post = mockPosts.find((p) => p.id.toString() === postId);
   if (!post) {

@@ -1,9 +1,11 @@
 "use client";
 
+import { PostType } from "@shared/type";
 import { useRouter } from "next/navigation";
+import DeleteButton from "./DeleteButton";
 
 interface Props {
-  post: any;
+  post: PostType;
   userId?: number;
   onDelete?: (id: number) => void;
 }
@@ -28,15 +30,7 @@ export default function PostCard({ post, userId, onDelete }: Props) {
       </div>
 
       {userId === post.author.id && onDelete && (
-        <button
-          className="absolute top-2 right-2 text-red-500 hover:text-red-700 hover:underline"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(post.id);
-          }}
-        >
-          삭제
-        </button>
+        <DeleteButton postId={post.id} onDelete={onDelete} />
       )}
     </div>
   );
