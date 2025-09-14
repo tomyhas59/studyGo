@@ -11,4 +11,17 @@ export type PostType = {
   createdAt: string;
   updatedAt?: string;
   participants: { id: number; name: string }[];
+  comments?: CommentType[];
+};
+
+export type CommentType = {
+  id: number;
+  content: string;
+  author: {
+    id: number;
+    name: string;
+  };
+  postId: number;
+  createdAt: string;
+  updatedAt?: string;
 };

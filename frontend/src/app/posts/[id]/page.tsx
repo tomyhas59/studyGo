@@ -9,6 +9,7 @@ import { useUserStore } from "store/userStore";
 import ParticipantList from "@/app/components/ParticipantList";
 import PostForm from "@/app/components/PostForm";
 import DeleteButton from "@/app/components/DeleteButton";
+import CommentList from "@/app/components/CommentList";
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -200,6 +201,7 @@ export default function PostDetailPage() {
           </div>
         </>
       )}
+      <CommentList postId={post.id} />
     </div>
   );
 }

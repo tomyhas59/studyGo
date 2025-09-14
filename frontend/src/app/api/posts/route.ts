@@ -13,15 +13,40 @@ export let mockPosts: PostType[] = [
       { id: 1, name: "홍길동" },
       { id: 2, name: "이몽룡" },
     ],
+    comments: [
+      {
+        id: 1,
+        content: "좋은 글 감사합니다!",
+        author: { id: 2, name: "이몽룡" },
+        postId: 1,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 2,
+        content: "저도 동의합니다.",
+        author: { id: 3, name: "성춘향" },
+        postId: 1,
+        createdAt: new Date().toISOString(),
+      },
+    ],
   },
   {
     id: 2,
     title: "두 번째 글",
     content: "Next.js API 테스트",
     category: "backend",
-    author: { id: 1, name: "이몽룡" },
+    author: { id: 2, name: "이몽룡" },
     createdAt: new Date().toISOString(),
     participants: [],
+    comments: [
+      {
+        id: 3,
+        content: "백엔드 흥미롭네요!",
+        author: { id: 1, name: "홍길동" },
+        postId: 2,
+        createdAt: new Date().toISOString(),
+      },
+    ],
   },
 ];
 
