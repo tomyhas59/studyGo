@@ -1,5 +1,6 @@
 import { PostType } from "@shared/type";
 import { NextResponse } from "next/server";
+import { mockComments } from "./[id]/comments/route";
 
 export let mockPosts: PostType[] = [
   {
@@ -13,22 +14,6 @@ export let mockPosts: PostType[] = [
       { id: 1, name: "홍길동" },
       { id: 2, name: "이몽룡" },
     ],
-    comments: [
-      {
-        id: 1,
-        content: "좋은 글 감사합니다!",
-        author: { id: 2, name: "이몽룡" },
-        postId: 1,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        content: "저도 동의합니다.",
-        author: { id: 3, name: "성춘향" },
-        postId: 1,
-        createdAt: new Date().toISOString(),
-      },
-    ],
   },
   {
     id: 2,
@@ -38,15 +23,6 @@ export let mockPosts: PostType[] = [
     author: { id: 2, name: "이몽룡" },
     createdAt: new Date().toISOString(),
     participants: [],
-    comments: [
-      {
-        id: 3,
-        content: "백엔드 흥미롭네요!",
-        author: { id: 1, name: "홍길동" },
-        postId: 2,
-        createdAt: new Date().toISOString(),
-      },
-    ],
   },
 ];
 
@@ -79,6 +55,14 @@ export async function GET(req: Request) {
         post.author.name.toLowerCase().includes(s)
     );
   }
+
+  // 댓글 수 추가
+  posts = posts.map((post) => {
+    const commentCount = mockComments.filter(
+      (c) => c.postId === post.id
+    ).length;
+    return { ...post, commentCount };
+  });
 
   // 정렬
   if (sort === "new") {

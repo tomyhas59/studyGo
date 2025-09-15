@@ -10,6 +10,7 @@ import ParticipantList from "@/app/components/ParticipantList";
 import PostForm from "@/app/components/PostForm";
 import DeleteButton from "@/app/components/DeleteButton";
 import CommentList from "@/app/components/CommentList";
+import CommentForm from "@/app/components/CommentForm";
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -202,6 +203,7 @@ export default function PostDetailPage() {
         </>
       )}
       <CommentList postId={post.id} />
+      <CommentForm postId={post.id} />
     </div>
   );
 }

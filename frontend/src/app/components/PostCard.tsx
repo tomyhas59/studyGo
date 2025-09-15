@@ -21,6 +21,9 @@ export default function PostCard({ post, userId, onDelete }: Props) {
       <div className="p-4">
         <h2 className="text-xl font-semibold text-blue-600 hover:underline">
           {post.title}
+          <span className="ml-2 text-sm text-gray-500">
+            ({post.commentCount})
+          </span>
         </h2>
         <p className="text-sm text-gray-500 mt-2">카테고리: {post.category}</p>
         <p className="text-sm text-gray-500 mt-2">

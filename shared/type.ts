@@ -11,7 +11,7 @@ export type PostType = {
   createdAt: string;
   updatedAt?: string;
   participants: { id: number; name: string }[];
-  comments?: CommentType[];
+  commentCount?: number;
 };
 
 export type CommentType = {
