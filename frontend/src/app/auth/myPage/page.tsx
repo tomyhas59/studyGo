@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/app/lib/axios";
 import MyPostsList from "@/app/components/MyPostList";

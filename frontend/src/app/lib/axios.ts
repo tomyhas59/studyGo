@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useLoadingStore } from "store/LoadingState";
+import { useLoadingStore } from "store/useLoadingState";
 
 const instance = axios.create({
   baseURL: "/api",

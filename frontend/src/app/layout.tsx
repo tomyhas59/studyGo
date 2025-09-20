@@ -1,7 +1,7 @@
 import "./globals.css";
 import Header from "./components/Header";
 import Providers from "./providers";
-
+import Toast from "./components/Toast";
 export const metadata = {
   title: "studyGO",
   description: "스터디 모집 플랫폼",
@@ -21,6 +21,7 @@ export default function RootLayout({
             {children}
           </main>
         </Providers>
+        <Toast />
       </body>
     </html>
   );

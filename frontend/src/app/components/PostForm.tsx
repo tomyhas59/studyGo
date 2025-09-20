@@ -32,8 +32,8 @@ export default function PostForm({
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className="max-w-md w-full mx-auto mt-10 p-6 border border-gray-200 rounded-xl shadow-lg bg-white">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 text-center sm:text-left">
         모집글 {submitText}
       </h1>
       <input
@@ -55,7 +55,7 @@ export default function PostForm({
         ))}
       </select>
       <textarea
-        className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full mb-4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
         placeholder="내용"
         value={form.content}
         onChange={(e) => handleChange("content", e.target.value)}

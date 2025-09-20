@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "../lib/axios";
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 import { CommentType } from "@shared/type";
 
 interface CommentFormProps {
@@ -43,20 +43,23 @@ export default function CommentForm({ postId }: CommentFormProps) {
   if (!user) return null;
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 w-full max-w-3xl mx-auto px-4 sm:px-6">
       <textarea
-        className="w-full p-4 border border-gray-200 rounded-lg mb-2"
+        className="w-full p-4 border border-gray-200 rounded-lg mb-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 transition
+               sm:text-base text-sm"
         rows={3}
         placeholder="댓글을 입력하세요..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <button
-        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-        onClick={handleSubmit}
-      >
-        댓글 작성
-      </button>
+      <div className="flex justify-end">
+        <button
+          className="px-4 sm:px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm sm:text-base"
+          onClick={handleSubmit}
+        >
+          댓글 작성
+        </button>
+      </div>
     </div>
   );
 }

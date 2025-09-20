@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 
 export default function HomePage() {
   const user = useUserStore((state) => state.user);

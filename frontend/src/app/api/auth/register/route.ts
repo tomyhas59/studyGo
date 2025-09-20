@@ -14,6 +14,12 @@ export const mockUsers: User[] = [
     password: "123qwe",
     name: "yh",
   },
+  {
+    id: 4,
+    email: "aa@naver.com",
+    password: "123qwe",
+    name: "aa",
+  },
 ];
 
 export async function POST(req: Request) {

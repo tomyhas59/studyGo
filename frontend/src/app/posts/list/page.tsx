@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/app/lib/axios";
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 import PostFilter from "@/app/components/PostFilter";
 import PostCard from "@/app/components/PostCard";
+import { useToastStore } from "store/useToastStore";
 
 export default function PostListPage() {
   const user = useUserStore((state) => state.user);
+  const { addToast } = useToastStore();
   const [filters, setFilters] = useState({
     category: "",
     sort: "new",
@@ -24,9 +26,14 @@ export default function PostListPage() {
   });
 
   const handleDelete = async (id: number) => {
-    if (confirm("정말 삭제하시겠습니까?")) {
-      await axios.delete(`/posts/${id}`);
-      refetch();
+    try {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        await axios.delete(`/posts/${id}`);
+        refetch();
+        addToast("삭제가 완료되었습니다 ✅");
+      }
+    } catch (error) {
+      addToast("삭제에 실패하였습니다 ❌");
     }
   };
 

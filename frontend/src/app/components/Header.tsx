@@ -1,21 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 
 export default function Header() {
   const user = useUserStore((state) => state.user);
   const logout = useUserStore((state) => state.logout);
   return (
-    <header className="bg-white shadow-md px-6 py-4 flex flex-wrap justify-between items-center sticky top-0 z-50">
+    <header className="bg-white shadow-md px-4 sm:px-6 py-3 sm:py-4 flex flex-wrap justify-between items-center sticky top-0 z-50">
       <Link
         href="/"
-        className="text-2xl font-extrabold text-gray-800 hover:text-blue-500 transition"
+        className="text-xl sm:text-2xl font-extrabold text-gray-800 hover:text-blue-500 transition"
       >
         studyGO
       </Link>
 
-      <nav className="flex flex-wrap gap-4 mt-2 md:mt-0">
+      <nav className="flex flex-wrap gap-3 sm:gap-4 mt-2 sm:mt-0 text-sm sm:text-base">
         {user ? (
           <>
             <Link

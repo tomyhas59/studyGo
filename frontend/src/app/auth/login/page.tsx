@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import axios from "@/app/lib/axios";

@@ -20,13 +20,11 @@ export default function PostFilter({ onFilterChange }: Props) {
   }, [category, sort, search]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 mb-4">
+    <div className="flex flex-col sm:flex-row gap-3 mb-4">
       <select
-        className="p-2 border rounded"
+        className="p-2 border rounded w-full sm:w-auto"
         value={category}
-        onChange={(e) => {
-          setCategory(e.target.value);
-        }}
+        onChange={(e) => setCategory(e.target.value)}
       >
         <option value="">전체</option>
         <option value="frontend">프론트엔드</option>
@@ -35,11 +33,9 @@ export default function PostFilter({ onFilterChange }: Props) {
       </select>
 
       <select
-        className="p-2 border rounded"
+        className="p-2 border rounded w-full sm:w-auto"
         value={sort}
-        onChange={(e) => {
-          setSort(e.target.value);
-        }}
+        onChange={(e) => setSort(e.target.value)}
       >
         <option value="new">최신순</option>
         <option value="popular">인기순</option>
@@ -47,12 +43,10 @@ export default function PostFilter({ onFilterChange }: Props) {
 
       <input
         type="text"
-        className="p-2 border rounded flex-1"
+        className="p-2 border rounded flex-1 w-full sm:w-auto"
         placeholder="검색"
         value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
+        onChange={(e) => setSearch(e.target.value)}
       />
     </div>
   );

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import axios from "@/app/lib/axios";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import PostForm from "@/app/components/PostForm";
 

@@ -3,7 +3,7 @@
 import { CommentType } from "@shared/type";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "../lib/axios";
-import { useUserStore } from "store/userStore";
+import { useUserStore } from "store/useUserStore";
 import { useState } from "react";
 
 interface CommentListProps {
@@ -70,32 +70,31 @@ export default function CommentList({ postId }: CommentListProps) {
   }
 
   return (
-    <ul className="space-y-4">
+    <ul className="space-y-4 w-full max-w-3xl mx-auto px-4 sm:px-6">
       {comments.map((comment) => (
         <li
           key={comment.id}
           className="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50"
         >
-          {/* 작성자 + 시간 */}
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2">
             <span className="font-medium text-gray-800">
               {comment.author.name}
             </span>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 mt-1 sm:mt-0">
               {new Date(comment.createdAt).toLocaleString()}
             </span>
           </div>
 
-          {/* 댓글 수정 모드 */}
           {editingId === comment.id ? (
             <div>
               <textarea
-                className="w-full p-2 border border-gray-300 rounded mb-2"
+                className="w-full p-2 border border-gray-300 rounded mb-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 transition
+                       sm:text-base text-sm"
                 rows={2}
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
               />
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 justify-end">
                 <button
                   onClick={() => handleEditComment(comment.id, editContent)}
                   className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -112,20 +111,17 @@ export default function CommentList({ postId }: CommentListProps) {
             </div>
           ) : (
             <>
-              {/* 댓글 내용 */}
-              <p className="text-gray-700 whitespace-pre-line">
+              <p className="text-gray-700 whitespace-pre-line sm:text-base text-sm">
                 {comment.content}
               </p>
-
-              {/* 본인 댓글일 때만 수정/삭제 버튼 */}
               {user?.id === comment.author.id && (
-                <div className="flex gap-2 mt-2 text-sm">
+                <div className="flex flex-col sm:flex-row gap-2 mt-2 text-sm justify-end">
                   <button
                     onClick={() => {
                       setEditingId(comment.id);
                       setEditContent(comment.content);
                     }}
-                    className="text-blue-500 hover:underline"
+                    className="text-blue-500 hover:underline cursor-pointer"
                   >
                     수정
                   </button>
@@ -135,7 +131,7 @@ export default function CommentList({ postId }: CommentListProps) {
                         deleteMutation.mutate(comment.id);
                       }
                     }}
-                    className="text-red-500 hover:underline"
+                    className="text-red-500 hover:underline cursor-pointer"
                   >
                     삭제
                   </button>

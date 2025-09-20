@@ -4,22 +4,21 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "@/app/lib/axios";
 import { PostType } from "@shared/type";
-import { useEffect, useState } from "react";
-import { useUserStore } from "store/userStore";
+import { useState } from "react";
+import { useUserStore } from "store/useUserStore";
 import ParticipantList from "@/app/components/ParticipantList";
 import PostForm from "@/app/components/PostForm";
 import DeleteButton from "@/app/components/DeleteButton";
 import CommentList from "@/app/components/CommentList";
 import CommentForm from "@/app/components/CommentForm";
+import { useToastStore } from "store/useToastStore";
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
   const user = useUserStore((state) => state.user);
-  const [participants, setParticipants] = useState<
-    { id: number; name: string }[]
-  >([]);
+  const { addToast } = useToastStore();
 
   // 게시글 가져오기
   const {
@@ -34,26 +33,32 @@ export default function PostDetailPage() {
     },
   });
 
-  const fetchParticipants = async () => {
-    const res = await axios.get(`/study/${id}/participants`);
-    setParticipants(res.data);
-  };
+  // 참여자 목록 가져오기
 
-  useEffect(() => {
-    fetchParticipants();
-  }, [id]);
+  const { data: participants = [] } = useQuery({
+    queryKey: ["participants", id],
+    queryFn: async () => {
+      const res = await axios.get(`/study/${id}/participants`);
+      return res.data;
+    },
+  });
 
   // 참여
   const joinMutation = useMutation({
-    mutationFn: async () => await axios.post(`/study/${id}/join`, { user }),
-    onSuccess: fetchParticipants,
+    mutationFn: async () =>
+      await axios.post(`/study/${id}/participants`, { user }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["participants", id] });
+    },
   });
 
   // 참여 취소
   const cancelMutation = useMutation({
     mutationFn: async () =>
-      await axios.delete(`/study/${id}/leave`, { data: { user } }),
-    onSuccess: fetchParticipants,
+      await axios.delete(`/study/${id}/participants`, { data: { user } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["participants", id] });
+    },
   });
 
   // 게시글 수정
@@ -88,9 +93,14 @@ export default function PostDetailPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("정말 삭제하시겠습니까?")) {
-      await axios.delete(`/posts/${id}`);
-      router.push("/posts/list");
+    try {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        await axios.delete(`/posts/${id}`);
+        addToast("삭제가 완료되었습니다 ✅");
+        router.push("/posts/list");
+      }
+    } catch (error) {
+      addToast("삭제 실패 😢");
     }
   };
 
@@ -98,7 +108,9 @@ export default function PostDetailPage() {
   if (isError || !post) return <p className="text-center mt-10">에러 발생!</p>;
 
   const isAuthor = user?.id === post.author.id;
-  const isJoined = participants.some((p) => p.id === user?.id);
+  const isJoined = participants.some(
+    (p: { id: number; name: string }) => p.id === user?.id
+  );
 
   return (
     <div className="max-w-3xl mx-auto mt-12 p-8 bg-white border border-gray-200 rounded-2xl shadow-lg grid gap-8">
@@ -172,32 +184,35 @@ export default function PostDetailPage() {
             </div>
           )}
 
-          {/* 참가자 */}
+          {/* 참여자 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-50 p-4 rounded-xl shadow-sm">
-              <h2 className="text-2xl font-semibold mb-3">참가자 목록</h2>
+              <h2 className="text-2xl font-semibold mb-3">참여자 목록</h2>
               <ParticipantList participants={participants} />
             </div>
           </div>
 
           {/* 액션 버튼 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 items-start">
             {isAuthor && (
               <button
-                className="px-6 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition"
+                className="px-6 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition shadow-md"
                 onClick={handleEdit}
               >
                 수정
               </button>
             )}
+
             <button
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition shadow-md"
               onClick={() => router.push("/posts/list")}
             >
               목록으로
             </button>
             {isAuthor && (
-              <DeleteButton postId={post.id} onDelete={handleDelete} />
+              <div className="relative w-full h-12">
+                <DeleteButton postId={post.id} onDelete={handleDelete} />
+              </div>
             )}
           </div>
         </>
