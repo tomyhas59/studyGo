@@ -2,27 +2,45 @@ import { PostType } from "@shared/type";
 import { NextResponse } from "next/server";
 import { mockComments } from "./[id]/comments/route";
 
-export let mockPosts: PostType[] = [
+export const mockPosts: PostType[] = [
   {
     id: 1,
-    title: "첫 번째 글",
-    content: "안녕하세요!",
-    category: "frontend",
+    title: "프론트엔드 스터디 모집",
+    content: "Next.js와 TypeScript를 같이 공부할 참여자를 모집합니다.",
+    category: "프론트엔드",
     author: { id: 1, name: "홍길동" },
-    createdAt: new Date().toISOString(),
+    createdAt: "2025-09-21T10:00:00.000Z",
     participants: [
-      { id: 1, name: "홍길동" },
-      { id: 2, name: "이몽룡" },
+      {
+        id: 1,
+        name: "홍길동",
+        status: "approved",
+        joinedAt: "2025-09-21T12:00:00.000Z",
+      },
+      {
+        id: 2,
+        name: "이몽룡",
+        status: "approved",
+        joinedAt: "2025-09-21T12:00:00.000Z",
+      },
+      {
+        id: 3,
+        name: "성춘향",
+        status: "pending",
+        joinedAt: "2025-09-21T13:00:00.000Z",
+      },
     ],
+    commentCount: 3,
   },
   {
     id: 2,
-    title: "두 번째 글",
-    content: "Next.js API 테스트",
-    category: "backend",
+    title: "백엔드 스터디 모집",
+    content: "Spring Boot와 JPA를 함께 공부할 사람을 찾습니다.",
+    category: "백엔드",
     author: { id: 2, name: "이몽룡" },
-    createdAt: new Date().toISOString(),
+    createdAt: "2025-09-20T09:30:00.000Z",
     participants: [],
+    commentCount: 0,
   },
 ];
 
@@ -89,7 +107,14 @@ export async function POST(req: Request) {
       name: body.user.name,
     },
     createdAt: new Date().toISOString(),
-    participants: [{ id: body.user.id, name: body.user.name }],
+    participants: [
+      {
+        id: body.user.id,
+        name: body.user.name,
+        status: "approved" as const,
+        joinedAt: new Date().toISOString(),
+      },
+    ],
   };
 
   mockPosts.push(newPost);

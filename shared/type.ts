@@ -10,7 +10,7 @@ export type PostType = {
   };
   createdAt: string;
   updatedAt?: string;
-  participants: { id: number; name: string }[];
+  participants: ParticipantType[];
   commentCount?: number;
 };
 
@@ -24,4 +24,11 @@ export type CommentType = {
   postId: number;
   createdAt: string;
   updatedAt?: string;
+};
+
+export type ParticipantType = {
+  id: number;
+  name: string;
+  status: "pending" | "approved" | "rejected";
+  joinedAt: string;
 };

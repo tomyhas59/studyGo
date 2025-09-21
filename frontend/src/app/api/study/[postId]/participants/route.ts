@@ -38,10 +38,26 @@ export async function POST(
   if (!post.participants) {
     post.participants = [];
   }
-  if (!post.participants.some((p) => p.id === user.id)) {
-    post.participants.push({ id: user.id, name: user.name });
+
+  const alreadyParticipated = post.participants.find((p) => p.id === user.id);
+
+  if (alreadyParticipated) {
+    return NextResponse.json(
+      { message: "이미 참여한 스터디입니다." },
+      { status: 400 }
+    );
   }
-  return NextResponse.json({ message: "참여 완료" });
+
+  post.participants.push({
+    id: user.id,
+    name: user.name,
+    status: "pending",
+    joinedAt: new Date().toISOString(),
+  });
+  return NextResponse.json(
+    { message: "참여 신청이 완료되었습니다." },
+    { status: 200 }
+  );
 }
 
 // 참여 취소

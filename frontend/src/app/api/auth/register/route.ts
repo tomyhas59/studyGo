@@ -12,13 +12,13 @@ export const mockUsers: User[] = [
     id: 3,
     email: "yh@naver.com",
     password: "123qwe",
-    name: "yh",
+    name: "성춘향",
   },
   {
-    id: 4,
+    id: 1,
     email: "aa@naver.com",
     password: "123qwe",
-    name: "aa",
+    name: "홍길동",
   },
 ];
 

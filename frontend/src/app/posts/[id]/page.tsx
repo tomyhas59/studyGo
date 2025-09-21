@@ -167,7 +167,7 @@ export default function PostDetailPage() {
           </p>
 
           {/* 참여/참여취소 버튼 */}
-          {user && (
+          {user && user.id !== post.author.id && (
             <div className="w-full md:w-1/2">
               <button
                 className={`w-full px-6 py-3 rounded-lg font-medium text-white transition ${
@@ -188,7 +188,7 @@ export default function PostDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-50 p-4 rounded-xl shadow-sm">
               <h2 className="text-2xl font-semibold mb-3">참여자 목록</h2>
-              <ParticipantList participants={participants} />
+              <ParticipantList post={post} participants={participants} />
             </div>
           </div>
 
