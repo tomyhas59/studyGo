@@ -54,7 +54,7 @@ export default function CommentForm({ postId }: CommentFormProps) {
       />
       <div className="flex justify-end">
         <button
-          className="px-4 sm:px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm sm:text-base"
+          className="px-4 sm:px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm sm:text-base cursor-pointer"
           onClick={handleSubmit}
         >
           댓글 작성

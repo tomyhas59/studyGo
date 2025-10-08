@@ -6,8 +6,8 @@ interface DeleteButtonProps {
 export default function DeleteButton({ postId, onDelete }: DeleteButtonProps) {
   return (
     <button
-      className="absolute top-2 right-2 text-red-500 cursor-pointer hover:text-red-700 hover:underline
-             sm:top-3 sm:right-3 sm:text-sm text-xs transition"
+      className="px-3 py-1 bg-red-500 text-white rounded-lg cursor-pointer hover:underline
+             sm:top-3 sm:right-3 sm:text-sm text-xs"
       onClick={(e) => {
         e.stopPropagation();
         onDelete(postId);

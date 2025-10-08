@@ -19,9 +19,12 @@ export default function PostCard({ post, userId, onDelete }: Props) {
       className="relative border rounded-lg shadow-md mb-4 hover:shadow-xl transition bg-white cursor-pointer overflow-hidden"
     >
       <div className="p-5 space-y-3">
-        <h2 className="text-xl font-semibold text-blue-600 flex flex-col sm:flex-row sm:items-center sm:justify-start gap-2">
-          <span className="hover:underline">{post.title}</span>
-          <div className="flex flex-wrap gap-2 sm:gap-4 items-center">
+        <div className="flex items-center justify-between w-full">
+          {/* 왼쪽 그룹 */}
+          <div className="flex gap-2 sm:gap-4 items-center">
+            <h2 className="text-xl font-semibold text-blue-600 hover:underline">
+              {post.title}
+            </h2>
             <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
               댓글 {post.commentCount ?? 0}
             </span>
@@ -29,7 +32,12 @@ export default function PostCard({ post, userId, onDelete }: Props) {
               현재 참여자 {post.participants ? post.participants.length : 0}명
             </span>
           </div>
-        </h2>
+
+          {/* 오른쪽 삭제 버튼 */}
+          {userId === post.author.id && onDelete && (
+            <DeleteButton postId={post.id} onDelete={onDelete} />
+          )}
+        </div>
 
         <p className="text-sm text-gray-500">카테고리: {post.category}</p>
         <p className="text-sm text-gray-500">
@@ -37,9 +45,6 @@ export default function PostCard({ post, userId, onDelete }: Props) {
           {new Date(post.createdAt).toLocaleString()}
         </p>
       </div>
-      {userId === post.author.id && onDelete && (
-        <DeleteButton postId={post.id} onDelete={onDelete} />
-      )}
     </div>
   );
 }

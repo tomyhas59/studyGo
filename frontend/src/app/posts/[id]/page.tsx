@@ -139,11 +139,11 @@ export default function PostDetailPage() {
         <>
           {/* 헤더 */}
           <div className="grid gap-4">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+            <div className="flex flex-col md:justify-between md:items-center gap-2">
               <h1 className="text-4xl font-bold text-gray-800">{post.title}</h1>
               <div className="flex flex-col md:flex-row md:items-center md:gap-4 text-gray-500 text-sm">
                 <span>
-                  작성자:{" "}
+                  작성자:
                   <span className="font-medium">{post.author.name}</span>
                 </span>
                 <span>작성일: {new Date(post.createdAt).toLocaleString()}</span>
@@ -168,9 +168,9 @@ export default function PostDetailPage() {
 
           {/* 참여/참여취소 버튼 */}
           {user && user.id !== post.author.id && (
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/5">
               <button
-                className={`w-full px-6 py-3 rounded-lg font-medium text-white transition ${
+                className={`w-full px-6 py-3 rounded-lg font-medium text-white transition cursor-pointer ${
                   isJoined
                     ? "bg-red-500 hover:bg-red-600"
                     : "bg-green-500 hover:bg-green-600"
@@ -185,37 +185,30 @@ export default function PostDetailPage() {
           )}
 
           {/* 참여자 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
             <div className="bg-gray-50 p-4 rounded-xl shadow-sm">
               <h2 className="text-2xl font-semibold mb-3">참여자 목록</h2>
               <ParticipantList post={post} participants={participants} />
             </div>
           </div>
-
-          {/* 액션 버튼 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 items-start">
-            {isAuthor && (
-              <button
-                className="px-6 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition shadow-md"
-                onClick={handleEdit}
-              >
-                수정
-              </button>
-            )}
-
-            <button
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition shadow-md"
-              onClick={() => router.push("/posts/list")}
-            >
-              목록으로
-            </button>
-            {isAuthor && (
-              <div className="relative w-full h-12">
-                <DeleteButton postId={post.id} onDelete={handleDelete} />
-              </div>
-            )}
-          </div>
         </>
+      )}
+      {isAuthor && (
+        <div className="flex justify-between">
+          <button
+            className="w-20 px-6 py-2 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition shadow-md justify-self-end cursor-pointer"
+            onClick={handleEdit}
+          >
+            수정
+          </button>
+          <button
+            className="w-30 px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition shadow-md justify-self-end cursor-pointer"
+            onClick={() => router.push("/posts/list")}
+          >
+            목록으로
+          </button>
+          <DeleteButton postId={post.id} onDelete={handleDelete} />
+        </div>
       )}
       <CommentList postId={post.id} />
       <CommentForm postId={post.id} />
